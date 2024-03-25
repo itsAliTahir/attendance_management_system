@@ -33,7 +33,8 @@ class AttendanceManagementSystem extends ChangeNotifier {
         user: Person(username: username, password: password, role: "User"),
         joiningDate: DateFormat('ddMMMyyyy').format(DateTime.now()),
         attendance: [],
-        leaves: []));
+        leaves: [],
+        profilePic: "assets/placeholder.jpg"));
     Navigator.pop(context);
   }
 
@@ -254,5 +255,25 @@ class AttendanceManagementSystem extends ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+
+  void changeProfilePic(String user, String newpicpath) {
+    for (int i = 0; i < _usersList.length; i++) {
+      if (user == _usersList[i].user.username) {
+        _usersList[i].profilePic = newpicpath;
+        print(_usersList[i].profilePic);
+        print("ad");
+      }
+    }
+    notifyListeners();
+  }
+
+  String returnProfilePic(String user) {
+    for (int i = 0; i < _usersList.length; i++) {
+      if (user == _usersList[i].user.username) {
+        return _usersList[i].profilePic;
+      }
+    }
+    return "assets/placeholder.jpg";
   }
 }

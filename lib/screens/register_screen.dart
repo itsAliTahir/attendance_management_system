@@ -20,22 +20,24 @@ class RegisterScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: backGroundColor,
-        body: SizedBox(
-          height: screenHeight,
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              Expanded(
-                flex: 12,
-                child: Container(
-                  margin: const EdgeInsets.all(40),
-                  child: Image.asset("assets/register.png"),
+        body: SingleChildScrollView(
+          child: SizedBox(
+            height: screenHeight - 30,
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 20,
                 ),
-              ),
-              Expanded(flex: 24, child: Register()),
-            ],
+                Expanded(
+                  flex: 12,
+                  child: Container(
+                    margin: const EdgeInsets.all(40),
+                    child: Image.asset("assets/register.png"),
+                  ),
+                ),
+                Expanded(flex: 24, child: Register()),
+              ],
+            ),
           ),
         ),
       ),

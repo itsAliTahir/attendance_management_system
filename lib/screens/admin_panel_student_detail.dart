@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
@@ -75,7 +76,18 @@ class MyAdminPanelUserDetail extends StatelessWidget {
                   margin: const EdgeInsets.only(top: 10, left: 20, right: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100),
-                    color: Colors.red,
+                    color: Colors.white,
+                  ),
+                  child: Hero(
+                    tag: attendaceManagementSystem.returnProfilePic(args.user),
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: attendaceManagementSystem
+                                    .returnProfilePic(args.user) ==
+                                "assets/placeholder.jpg"
+                            ? Image.asset("assets/placeholder.jpg")
+                            : Image.file(File(attendaceManagementSystem
+                                .returnProfilePic(args.user)))),
                   ),
                 ),
                 Align(

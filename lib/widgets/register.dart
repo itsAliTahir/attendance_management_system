@@ -5,26 +5,18 @@ import 'package:provider/provider.dart';
 import '../provider/data_provider.dart';
 import '../provider/theme_data.dart';
 
-class Register extends StatefulWidget {
-  const Register({super.key});
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+TextEditingController _usernameController = TextEditingController();
+TextEditingController _passwordController = TextEditingController();
 
-  @override
-  State<Register> createState() => _RegisterState();
-}
-
-class _RegisterState extends State<Register> {
+class Register extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    TextEditingController _usernameController = TextEditingController();
-    TextEditingController _passwordController = TextEditingController();
     var attendaceManagementSystem =
         Provider.of<AttendanceManagementSystem>(context);
-
-    void dispose() {
+    void disposeControllers() {
       _usernameController.dispose();
       _passwordController.dispose();
-      super.dispose();
     }
 
     String? _validateUsername(String? value) {

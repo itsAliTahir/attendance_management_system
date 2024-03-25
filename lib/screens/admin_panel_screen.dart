@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:attendance_management/screens/screens.dart';
 import 'package:attendance_management/widgets/gradient_button_2.dart';
 import 'package:delayed_display/delayed_display.dart';
@@ -151,9 +153,35 @@ class MyAdminPanelScreen extends StatelessWidget {
                                       width: 40,
                                       height: 40,
                                       decoration: BoxDecoration(
-                                          color: Colors.red,
+                                          color: Colors.white,
                                           borderRadius:
                                               BorderRadius.circular(50)),
+                                      child: Hero(
+                                        tag: attendaceManagementSystem
+                                            .returnProfilePic(
+                                                attendaceManagementSystem
+                                                    .userList[index]
+                                                    .user
+                                                    .username),
+                                        child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(100),
+                                            child: attendaceManagementSystem.returnProfilePic(
+                                                        attendaceManagementSystem
+                                                            .userList[index]
+                                                            .user
+                                                            .username) ==
+                                                    "assets/placeholder.jpg"
+                                                ? Image.asset(
+                                                    "assets/placeholder.jpg")
+                                                : Image.file(File(
+                                                    attendaceManagementSystem
+                                                        .returnProfilePic(
+                                                            attendaceManagementSystem
+                                                                .userList[index]
+                                                                .user
+                                                                .username)))),
+                                      ),
                                     ),
                                     SizedBox(
                                       width: 15,

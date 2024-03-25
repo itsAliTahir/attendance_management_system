@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:delayed_display/delayed_display.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
@@ -25,9 +28,13 @@ class AttendanceList extends StatelessWidget {
             width: 15,
             height: 15,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-                color: color,
-                border: Border.all(color: Colors.black)),
+              borderRadius: BorderRadius.circular(100),
+              color: color,
+            ),
+            child: Card(
+              color: color,
+              margin: EdgeInsets.all(0),
+            ),
           ),
           SizedBox(
             width: 5,
@@ -72,7 +79,18 @@ class AttendanceList extends StatelessWidget {
                   margin: const EdgeInsets.only(top: 10, left: 20, right: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100),
-                    color: Colors.red,
+                    color: Colors.white,
+                  ),
+                  child: Hero(
+                    tag: attendaceManagementSystem.returnProfilePic(args.user),
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: attendaceManagementSystem
+                                    .returnProfilePic(args.user) ==
+                                "assets/placeholder.jpg"
+                            ? Image.asset("assets/placeholder.jpg")
+                            : Image.file(File(attendaceManagementSystem
+                                .returnProfilePic(args.user)))),
                   ),
                 ),
                 Align(
@@ -146,28 +164,37 @@ class AttendanceList extends StatelessWidget {
               itemCount:
                   attendaceManagementSystem.generateDateList(args.user).length,
               itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.all(10),
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      color: attendaceManagementSystem.isPresentDateDay(
-                              attendaceManagementSystem
-                                  .generateDateList(args.user)[index],
-                              attendaceManagementSystem
-                                  .studentAttendance(args.user))
-                          ? Color.fromARGB(255, 89, 255, 150)
-                          : attendaceManagementSystem.isPresentDateDay(
+                return DelayedDisplay(
+                  child: Card(
+                    margin: EdgeInsets.all(10),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: attendaceManagementSystem.isPresentDateDay(
                                   attendaceManagementSystem
                                       .generateDateList(args.user)[index],
                                   attendaceManagementSystem
-                                      .studentLeaves(args.user))
-                              ? Colors.lightBlueAccent
-                              : Colors.white,
-                      border: Border.all(),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Center(
-                    child: Text(attendaceManagementSystem
-                        .generateDateList(args.user)[index]),
+                                      .studentAttendance(args.user))
+                              ? const Color.fromARGB(255, 89, 255, 150)
+                              : attendaceManagementSystem.isPresentDateDay(
+                                      attendaceManagementSystem
+                                          .generateDateList(args.user)[index],
+                                      attendaceManagementSystem
+                                          .studentLeaves(args.user))
+                                  ? Colors.lightBlueAccent
+                                  : Colors.white,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Center(
+                        child: Text(
+                          attendaceManagementSystem
+                              .generateDateList(args.user)[index],
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 );
               },

@@ -6,10 +6,12 @@ class User {
   late bool appliedLeave;
   late List<String> attendance;
   late List<String> leaves;
+  String profilePic = "assets/placeholder.jpg";
   User(
       {required this.user,
       required this.joiningDate,
       required this.appliedLeave,
       required this.attendance,
-      required this.leaves});
+      required this.leaves,
+      required this.profilePic});
 }

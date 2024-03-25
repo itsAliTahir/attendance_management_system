@@ -1,4 +1,9 @@
+import 'dart:io';
 import 'package:attendance_management/screens/attendance_list.dart';
+import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import '../widgets/gradient_button.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +27,43 @@ class MyUserPanelScreen extends StatelessWidget {
         Provider.of<AttendanceManagementSystem>(context);
     int dayspresent = attendaceManagementSystem.totalAttendance(args.user);
     int totaldays = attendaceManagementSystem.countTotalDays(args.user);
+    late ImagePicker _imagePicker = ImagePicker();
+    late XFile _image;
+    late File _imageFile = File(' ');
+    Future<void> _pickImage(ImageSource source) async {
+      try {
+        XFile? pickedImage = await _imagePicker.pickImage(source: source);
+        if (pickedImage != null) {
+          CroppedFile? croppedFile = await ImageCropper().cropImage(
+            sourcePath: pickedImage.path,
+            aspectRatioPresets: [CropAspectRatioPreset.square],
+            uiSettings: [
+              AndroidUiSettings(
+                  toolbarTitle: 'Cropper',
+                  // ignore: use_build_context_synchronously
+                  toolbarColor: primary,
+                  // ignore: use_build_context_synchronously
+                  activeControlsWidgetColor: primary,
+                  toolbarWidgetColor: Colors.white,
+                  initAspectRatio: CropAspectRatioPreset.original,
+                  lockAspectRatio: true),
+            ],
+          );
+          if (croppedFile != null) {
+            Directory appDocDir = await getApplicationDocumentsDirectory();
+            String path = appDocDir.path;
+            File(croppedFile.path).copySync('$path/${args.user}.png');
+            // addNewItem("$path/${args.user}.png", context);     // doing this action in dataprovider
+            attendaceManagementSystem.changeProfilePic(
+                args.user, "$path/${args.user}.png");
+            print("object: $path/${args.user}.png");
+          }
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
+
     Widget iconMaker({
       required String tooltip,
       required IconData? icon,
@@ -88,7 +130,10 @@ class MyUserPanelScreen extends StatelessWidget {
             Container(
                 margin: const EdgeInsets.all(10),
                 child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _pickImage(ImageSource.gallery);
+                      print("object pic");
+                    },
                     icon: const Icon(
                       FluentIcons.edit_12_filled,
                     ))),
@@ -104,14 +149,25 @@ class MyUserPanelScreen extends StatelessWidget {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
-                    width: 100,
-                    height: 100,
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color: Colors.red,
-                    ),
-                  ),
+                      width: 100,
+                      height: 100,
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color: Colors.white,
+                      ),
+                      child: Hero(
+                        tag: attendaceManagementSystem
+                            .returnProfilePic(args.user),
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: attendaceManagementSystem
+                                        .returnProfilePic(args.user) ==
+                                    "assets/placeholder.jpg"
+                                ? Image.asset("assets/placeholder.jpg")
+                                : Image.file(File(attendaceManagementSystem
+                                    .returnProfilePic(args.user)))),
+                      )),
                 ),
                 Center(
                   child: Text(args.user.toString(),

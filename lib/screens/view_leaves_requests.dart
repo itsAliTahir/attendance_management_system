@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:attendance_management/provider/theme_data.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
@@ -84,8 +86,28 @@ class ViewLeaveRequests extends StatelessWidget {
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                      color: Colors.red,
+                                      color: Colors.white,
                                       borderRadius: BorderRadius.circular(50)),
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(100),
+                                      child: attendaceManagementSystem
+                                                  .returnProfilePic(
+                                                      attendaceManagementSystem
+                                                          .totalLeavesRequests()[
+                                                              index]
+                                                          .user
+                                                          .username) ==
+                                              "assets/placeholder.jpg"
+                                          ? Image.asset(
+                                              "assets/placeholder.jpg")
+                                          : Image.file(File(
+                                              attendaceManagementSystem
+                                                  .returnProfilePic(
+                                                      attendaceManagementSystem
+                                                          .totalLeavesRequests()[
+                                                              index]
+                                                          .user
+                                                          .username)))),
                                 ),
                                 SizedBox(
                                   width: 15,
@@ -124,10 +146,17 @@ class ViewLeaveRequests extends StatelessWidget {
                                 IconButton(
                                     onPressed: () {
                                       ShowAlertDialog obj = ShowAlertDialog();
-                                      obj.alertDialog(
-                                          context,
-                                          "Request Approved",
-                                          Colors.lightBlueAccent);
+                                      obj.alertDialog(context,
+                                          "Request Rejected", Colors.blueGrey);
+                                      attendaceManagementSystem
+                                          .acceptRejectRequest(
+                                              attendaceManagementSystem
+                                                  .totalLeavesRequests()[index]
+                                                  .user
+                                                  .username,
+                                              DateFormat('ddMMMyyyy')
+                                                  .format(DateTime.now()),
+                                              0);
                                     },
                                     icon: Icon(FluentIcons.delete_12_filled)),
                               ],
