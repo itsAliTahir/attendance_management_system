@@ -6,3 +6,4 @@ String adminPanelScreen = '/adminpanelscreen';
 String attendanceDetailScreen = '/attendancedetailscreen';
 String adminPanelUserDetailScreen = '/adminpanelattendancedetailscreen';
 String viewleaverequests = '/viewleaverequests';
+String studentsreport = '/studentsreport';

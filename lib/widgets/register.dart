@@ -9,15 +9,21 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 TextEditingController _usernameController = TextEditingController();
 TextEditingController _passwordController = TextEditingController();
 
-class Register extends StatelessWidget {
+class Register extends StatefulWidget {
+  @override
+  State<Register> createState() => _RegisterState();
+}
+
+class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     var attendaceManagementSystem =
         Provider.of<AttendanceManagementSystem>(context);
-    void disposeControllers() {
-      _usernameController.dispose();
-      _passwordController.dispose();
-    }
+    // void disposeControllers() {
+    //   _usernameController.dispose();
+    //   _passwordController.dispose();
+    //   super.dispose();
+    // }
 
     String? _validateUsername(String? value) {
       if (value!.isEmpty) {
@@ -85,7 +91,8 @@ class Register extends StatelessWidget {
                       if (flag == false) {
                         attendaceManagementSystem.registerNewUser(
                             username, password, context);
-
+                        _usernameController.clear();
+                        _passwordController.clear();
                         obj.alertDialog(context, "Account Registered", primary);
                       } else {
                         obj.alertDialog(
@@ -120,6 +127,8 @@ class Register extends StatelessWidget {
                         style: TextStyle(fontSize: 16)),
                     TextButton(
                       onPressed: () {
+                        _usernameController.clear();
+                        _passwordController.clear();
                         Navigator.of(context).pop();
                       },
                       child: Text("Login",

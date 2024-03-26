@@ -78,17 +78,14 @@ class MyAdminPanelUserDetail extends StatelessWidget {
                     borderRadius: BorderRadius.circular(100),
                     color: Colors.white,
                   ),
-                  child: Hero(
-                    tag: attendaceManagementSystem.returnProfilePic(args.user),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: attendaceManagementSystem
-                                    .returnProfilePic(args.user) ==
-                                "assets/placeholder.jpg"
-                            ? Image.asset("assets/placeholder.jpg")
-                            : Image.file(File(attendaceManagementSystem
-                                .returnProfilePic(args.user)))),
-                  ),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: attendaceManagementSystem
+                                  .returnProfilePic(args.user) ==
+                              "assets/placeholder.jpg"
+                          ? Image.asset("assets/placeholder.jpg")
+                          : Image.file(File(attendaceManagementSystem
+                              .returnProfilePic(args.user)))),
                 ),
                 Align(
                   alignment: Alignment.centerLeft,

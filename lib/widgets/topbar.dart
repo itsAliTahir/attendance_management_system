@@ -1,5 +1,6 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:alert_banner/exports.dart';
-import '../provider/theme_data.dart';
 import 'package:flutter/material.dart';
 
 class ShowAlertDialog {
@@ -27,7 +28,7 @@ class AlertBannerChild extends StatelessWidget {
           BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.all(
+        borderRadius: const BorderRadius.all(
           Radius.circular(5),
         ),
       ),
@@ -36,7 +37,7 @@ class AlertBannerChild extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
             maxLines: 3,
             overflow: TextOverflow.ellipsis,

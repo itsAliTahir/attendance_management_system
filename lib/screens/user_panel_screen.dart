@@ -20,7 +20,6 @@ class MyUserPanelScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var screenWidth = MediaQuery.of(context).size.width;
     final UserPanelArguments args =
         ModalRoute.of(context)!.settings.arguments as UserPanelArguments;
     var attendaceManagementSystem =
@@ -28,8 +27,6 @@ class MyUserPanelScreen extends StatelessWidget {
     int dayspresent = attendaceManagementSystem.totalAttendance(args.user);
     int totaldays = attendaceManagementSystem.countTotalDays(args.user);
     late ImagePicker _imagePicker = ImagePicker();
-    late XFile _image;
-    late File _imageFile = File(' ');
     Future<void> _pickImage(ImageSource source) async {
       try {
         XFile? pickedImage = await _imagePicker.pickImage(source: source);
@@ -52,11 +49,11 @@ class MyUserPanelScreen extends StatelessWidget {
           if (croppedFile != null) {
             Directory appDocDir = await getApplicationDocumentsDirectory();
             String path = appDocDir.path;
-            File(croppedFile.path).copySync('$path/${args.user}.png');
+            String suffix = DateTime.now().toString();
+            File(croppedFile.path).copySync('$path/${args.user}-$suffix.png');
             // addNewItem("$path/${args.user}.png", context);     // doing this action in dataprovider
             attendaceManagementSystem.changeProfilePic(
-                args.user, "$path/${args.user}.png");
-            print("object: $path/${args.user}.png");
+                args.user, "$path/${args.user}-$suffix.png");
           }
         }
       } catch (e) {
@@ -103,169 +100,172 @@ class MyUserPanelScreen extends StatelessWidget {
       );
     }
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: backGroundColor,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: const Text(
-            "User Panel",
-            style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+    return PopScope(
+      canPop: false,
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: backGroundColor,
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            title: const Text(
+              "User Panel",
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+            ),
+            centerTitle: true,
+            leading: Container(
+              margin: const EdgeInsets.all(10),
+              child: IconButton(
+                  onPressed: () {
+                    ShowAlertDialog obj = ShowAlertDialog();
+                    obj.alertDialog(context, "Signed Out", Colors.blueGrey);
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(
+                    FluentIcons.sign_out_24_regular,
+                    size: 28,
+                  )),
+            ),
+            actions: [
+              Container(
+                  margin: const EdgeInsets.all(10),
+                  child: IconButton(
+                      onPressed: () {
+                        _pickImage(ImageSource.gallery);
+                        print("object pic");
+                      },
+                      icon: const Icon(
+                        FluentIcons.edit_12_filled,
+                      ))),
+            ],
           ),
-          centerTitle: true,
-          leading: Container(
-            margin: const EdgeInsets.all(10),
-            child: IconButton(
-                onPressed: () {
-                  ShowAlertDialog obj = ShowAlertDialog();
-                  obj.alertDialog(context, "Signed Out", Colors.blueGrey);
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  FluentIcons.sign_out_24_regular,
-                  size: 28,
-                )),
-          ),
-          actions: [
-            Container(
-                margin: const EdgeInsets.all(10),
-                child: IconButton(
-                    onPressed: () {
-                      _pickImage(ImageSource.gallery);
-                      print("object pic");
-                    },
-                    icon: const Icon(
-                      FluentIcons.edit_12_filled,
-                    ))),
-          ],
-        ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                      width: 100,
-                      height: 100,
-                      margin: const EdgeInsets.symmetric(vertical: 10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        color: Colors.white,
-                      ),
-                      child: Hero(
-                        tag: attendaceManagementSystem
-                            .returnProfilePic(args.user),
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: attendaceManagementSystem
-                                        .returnProfilePic(args.user) ==
-                                    "assets/placeholder.jpg"
-                                ? Image.asset("assets/placeholder.jpg")
-                                : Image.file(File(attendaceManagementSystem
-                                    .returnProfilePic(args.user)))),
-                      )),
-                ),
-                Center(
-                  child: Text(args.user.toString(),
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      iconMaker(
-                        tooltip: "Attendance",
-                        icon: FluentIcons.person_available_20_regular,
-                        text: "$dayspresent/$totaldays",
-                        color: primary,
-                      ),
-                      // iconMaker(
-                      //   tooltip: "Leave",
-                      //   icon: FluentIcons.flag_20_regular,
-                      //   text: "0",
-                      //   color: primary,
-                      // ),
-                      iconMaker(
-                        tooltip: "Today Status",
-                        icon: FluentIcons.status_20_regular,
-                        text: attendaceManagementSystem
-                                    .isTodayAttendanceMarked(args.user) ==
-                                true
-                            ? "Marked"
-                            : attendaceManagementSystem.toggleApplyLeave(
-                                        args.user, 0, context) ==
-                                    true
-                                ? "Leave"
-                                : "Unmark",
-                        color: primary,
-                      ),
-                    ],
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 20,
                   ),
-                ),
-                Container(
-                    margin: EdgeInsets.only(left: 20, right: 20),
-                    child: Divider()),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  margin: const EdgeInsets.only(left: 30),
-                  child: const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Available Actions",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                        width: 100,
+                        height: 100,
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: Colors.white,
                         ),
-                      )),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                GradientButton(
-                    gradient: [
-                      Color.fromARGB(255, 187, 4, 96),
-                      Color.fromARGB(255, 250, 98, 173),
-                    ],
-                    text: "Mark Attendance",
-                    ontap: () {
-                      attendaceManagementSystem.markAttendance(
-                          args.user,
-                          DateFormat('ddMMMyyyy').format(DateTime.now()),
-                          context);
-                    }),
-                GradientButton(
-                    gradient: [
-                      Color.fromARGB(255, 148, 71, 208),
-                      Color.fromARGB(255, 50, 201, 254),
-                    ],
-                    text: attendaceManagementSystem.toggleApplyLeave(
-                            args.user, 0, context)
-                        ? "Cancel Leave"
-                        : "Apply For Leave",
-                    ontap: () {
-                      attendaceManagementSystem.toggleApplyLeave(
-                          args.user, 1, context);
-                    }),
-                GradientButton(
-                    gradient: [
-                      Color.fromARGB(255, 148, 72, 210),
-                      Color.fromARGB(255, 231, 68, 221),
-                    ],
-                    text: "View Attendance",
-                    ontap: () {
-                      Navigator.pushNamed(
-                        context,
-                        attendanceDetailScreen,
-                        arguments: AttendanceListArgument(args.user),
-                      );
-                    }),
-              ],
+                        child: Hero(
+                          tag: attendaceManagementSystem
+                              .returnProfilePic(args.user),
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: attendaceManagementSystem
+                                          .returnProfilePic(args.user) ==
+                                      "assets/placeholder.jpg"
+                                  ? Image.asset("assets/placeholder.jpg")
+                                  : Image.file(File(attendaceManagementSystem
+                                      .returnProfilePic(args.user)))),
+                        )),
+                  ),
+                  Center(
+                    child: Text(args.user.toString(),
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        iconMaker(
+                          tooltip: "Attendance",
+                          icon: FluentIcons.person_available_20_regular,
+                          text: "$dayspresent/$totaldays",
+                          color: primary,
+                        ),
+                        // iconMaker(
+                        //   tooltip: "Leave",
+                        //   icon: FluentIcons.flag_20_regular,
+                        //   text: "0",
+                        //   color: primary,
+                        // ),
+                        iconMaker(
+                          tooltip: "Today Status",
+                          icon: FluentIcons.status_20_regular,
+                          text: attendaceManagementSystem
+                                      .isTodayAttendanceMarked(args.user) ==
+                                  true
+                              ? "Marked"
+                              : attendaceManagementSystem.toggleApplyLeave(
+                                          args.user, 0, context) ==
+                                      true
+                                  ? "Leave"
+                                  : "Unmark",
+                          color: primary,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                      margin: EdgeInsets.only(left: 20, right: 20),
+                      child: Divider()),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 30),
+                    child: const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Available Actions",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  GradientButton(
+                      gradient: [
+                        Color.fromARGB(255, 187, 4, 96),
+                        Color.fromARGB(255, 250, 98, 173),
+                      ],
+                      text: "Mark Attendance",
+                      ontap: () {
+                        attendaceManagementSystem.markAttendance(
+                            args.user,
+                            DateFormat('ddMMMyyyy').format(DateTime.now()),
+                            context);
+                      }),
+                  GradientButton(
+                      gradient: [
+                        Color.fromARGB(255, 148, 71, 208),
+                        Color.fromARGB(255, 50, 201, 254),
+                      ],
+                      text: attendaceManagementSystem.toggleApplyLeave(
+                              args.user, 0, context)
+                          ? "Cancel Leave"
+                          : "Apply For Leave",
+                      ontap: () {
+                        attendaceManagementSystem.toggleApplyLeave(
+                            args.user, 1, context);
+                      }),
+                  GradientButton(
+                      gradient: [
+                        Color.fromARGB(255, 148, 72, 210),
+                        Color.fromARGB(255, 231, 68, 221),
+                      ],
+                      text: "View Attendance",
+                      ontap: () {
+                        Navigator.pushNamed(
+                          context,
+                          attendanceDetailScreen,
+                          arguments: AttendanceListArgument(args.user),
+                        );
+                      }),
+                ],
+              ),
             ),
           ),
         ),

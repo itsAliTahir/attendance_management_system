@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:attendance_management/provider/theme_data.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';

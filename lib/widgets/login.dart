@@ -1,6 +1,7 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:attendance_management/screens/admin_panel_screen.dart';
 import 'package:attendance_management/widgets/topbar.dart';
-
 import '../screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
@@ -13,14 +14,21 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 TextEditingController _usernameController = TextEditingController();
 TextEditingController _passwordController = TextEditingController();
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     var attendaceManagementSystem =
         Provider.of<AttendanceManagementSystem>(context);
+
     void disposeControllers() {
       _usernameController.dispose();
       _passwordController.dispose();
+      super.dispose();
     }
 
     String? _validateUsername(String? value) {
@@ -68,9 +76,11 @@ class LoginScreen extends StatelessWidget {
               onTap: () {
                 late bool flag;
                 flag = false;
+
                 if (_formKey.currentState!.validate()) {
                   String username = _usernameController.text;
                   String password = _passwordController.text;
+
                   for (int i = 0;
                       i < attendaceManagementSystem.registeredPersons.length;
                       i++) {
@@ -84,6 +94,8 @@ class LoginScreen extends StatelessWidget {
                                 .registeredPersons[i].password ==
                             password) {
                       flag = true;
+                      _usernameController.clear();
+                      _passwordController.clear();
                       Navigator.pushNamed(
                         context,
                         userPanelScreen,
@@ -99,6 +111,8 @@ class LoginScreen extends StatelessWidget {
                                 .registeredPersons[i].username ==
                             username) {
                       flag = true;
+                      _usernameController.clear();
+                      _passwordController.clear();
                       Navigator.pushNamed(
                         context,
                         adminPanelScreen,
@@ -138,6 +152,8 @@ class LoginScreen extends StatelessWidget {
                     style: TextStyle(fontSize: 16)),
                 TextButton(
                   onPressed: () {
+                    _usernameController.clear();
+                    _passwordController.clear();
                     Navigator.pushNamed(context, registerScreen);
                   },
                   child: Text("Sign Up",
